@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+*.egg-info/
+.eggs/
+dist/
+build/
+.env
+.venv/
+venv/
+env/
+.DS_Store
+Thumbs.db
+*.log
+
+# Keep model artifacts
+!outputs/models/
+outputs/models/*.pkl
+
+# Rapports IMRAD (générés)
+report/
+report/rapport_IMRAD.docx
+
+# Scripts de génération rapport / notebook
+scripts/build_notebook.py
+generate_report.py
+
+# Sources LaTeX (exposé séparé)
+latex/

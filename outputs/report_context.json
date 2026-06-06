@@ -1,0 +1,263 @@
+{
+  "n_obs": 478,
+  "n_raw": 481,
+  "n_ties": 100,
+  "best_c": 0.001,
+  "accuracy": 0.3958333333333333,
+  "f1_macro": 0.1417910447761194,
+  "baseline_accuracy": 0.3958333333333333,
+  "baseline_f1_macro": 0.1417910447761194,
+  "lrt_statistic": 10.42831951209837,
+  "lrt_p": 1.0,
+  "chi2_gender": 26.407078788480455,
+  "chi2_gender_p": 0.33283821314225215,
+  "chi2_gender_dof": 24,
+  "age_mean": 26.099790794979082,
+  "age_min": 13.0,
+  "age_max": 91.0,
+  "age_std": 9.881979658384251,
+  "gender_counts": {
+    "Female": 263,
+    "Male": 208,
+    "Nonbinary ": 1,
+    "Non-binary": 1,
+    "NB": 1,
+    "unsure ": 1,
+    "Trans": 1,
+    "Non binary ": 1,
+    "There are others???": 1
+  },
+  "class_counts": {
+    "ADHD-Dominant": 187,
+    "Depression-Dominant": 138,
+    "Anxiety-Dominant": 92,
+    "LowSelfEsteem-Dominant": 61
+  },
+  "class_pct": {
+    "ADHD-Dominant": 39.1,
+    "Anxiety-Dominant": 19.2,
+    "LowSelfEsteem-Dominant": 12.8,
+    "Depression-Dominant": 28.9
+  },
+  "classification_rows": [
+    {
+      "class": "ADHD-Dominant",
+      "precision": 0.396,
+      "recall": 1.0,
+      "f1": 0.567,
+      "support": 38
+    },
+    {
+      "class": "Anxiety-Dominant",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 18
+    },
+    {
+      "class": "Depression-Dominant",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 28
+    },
+    {
+      "class": "LowSelfEsteem-Dominant",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 12
+    }
+  ],
+  "cv_results": [
+    {
+      "C": 0.001,
+      "mean_accuracy": 0.39005468215994527
+    },
+    {
+      "C": 0.01,
+      "mean_accuracy": 0.36637047163362957
+    },
+    {
+      "C": 0.1,
+      "mean_accuracy": 0.38462064251537936
+    },
+    {
+      "C": 1.0,
+      "mean_accuracy": 0.38205741626794254
+    },
+    {
+      "C": 10.0,
+      "mean_accuracy": 0.376930963773069
+    },
+    {
+      "C": 100.0,
+      "mean_accuracy": 0.38215994531784003
+    }
+  ],
+  "top_coef_by_class": {
+    "ADHD-Dominant": [
+      [
+        "uses_pinterest",
+        -0.0158
+      ],
+      [
+        "uses_reddit",
+        0.0141
+      ],
+      [
+        "uses_discord",
+        0.0119
+      ],
+      [
+        "age",
+        -0.0106
+      ],
+      [
+        "time_social_media_ord",
+        0.0104
+      ]
+    ],
+    "Anxiety-Dominant": [
+      [
+        "time_social_media_ord",
+        0.0192
+      ],
+      [
+        "age",
+        -0.0103
+      ],
+      [
+        "organization_University",
+        0.01
+      ],
+      [
+        "uses_twitter",
+        0.0095
+      ],
+      [
+        "uses_snapchat",
+        0.0079
+      ]
+    ],
+    "Depression-Dominant": [
+      [
+        "time_social_media_ord",
+        -0.0129
+      ],
+      [
+        "uses_facebook",
+        -0.0126
+      ],
+      [
+        "uses_youtube",
+        -0.0119
+      ],
+      [
+        "uses_twitter",
+        -0.0096
+      ],
+      [
+        "uses_instagram",
+        -0.0094
+      ]
+    ],
+    "LowSelfEsteem-Dominant": [
+      [
+        "age",
+        0.0267
+      ],
+      [
+        "time_social_media_ord",
+        -0.0167
+      ],
+      [
+        "uses_facebook",
+        0.011
+      ],
+      [
+        "uses_snapchat",
+        -0.0101
+      ],
+      [
+        "uses_reddit",
+        -0.0093
+      ]
+    ]
+  },
+  "train_size": 382,
+  "test_size": 96,
+  "n_features_encoded": 48,
+  "figures_body": [
+    [
+      "fig03c_class_distribution_bar",
+      "Distribution des profils comportementaux (effectifs)"
+    ],
+    [
+      "fig10_confusion_matrix",
+      "Matrice de confusion normalisée sur l'échantillon test"
+    ],
+    [
+      "fig11_classification_metrics",
+      "Précision, rappel et F1-score par profil"
+    ],
+    [
+      "fig12_roc_ovr",
+      "Courbes ROC en approche One-vs-Rest"
+    ],
+    [
+      "fig09_cv_accuracy_vs_C",
+      "Accuracy moyenne en validation croisée selon le paramètre C"
+    ],
+    [
+      "fig14_coefficients_heatmap",
+      "Carte des coefficients β (features × classes)"
+    ]
+  ],
+  "figures_annex": [
+    [
+      "fig03b_class_distribution_pie",
+      "Répartition en secteurs des quatre profils"
+    ],
+    [
+      "fig01_correlation_heatmap",
+      "Matrice de corrélation des variables numériques"
+    ],
+    [
+      "fig02_violin_scores_by_profile",
+      "Scores composites par profil (violons)"
+    ],
+    [
+      "fig03_boxplot_time_vs_profile",
+      "Temps sur les réseaux sociaux selon le profil"
+    ],
+    [
+      "fig04_pairplot_scores",
+      "Pairplot des quatre scores composites"
+    ],
+    [
+      "fig05_platforms_by_profile",
+      "Plateformes les plus citées par profil"
+    ],
+    [
+      "fig06_age_by_profile",
+      "Distribution de l'âge par profil"
+    ],
+    [
+      "fig07_gender_stacked_profile",
+      "Répartition genre × profil"
+    ],
+    [
+      "fig08_relationship_heatmap",
+      "Statut relationnel × profil comportemental"
+    ],
+    [
+      "fig13_precision_recall",
+      "Courbes précision–rappel par classe"
+    ],
+    [
+      "fig15_odds_ratios",
+      "Odds ratios des principales variables explicatives"
+    ]
+  ]
+}

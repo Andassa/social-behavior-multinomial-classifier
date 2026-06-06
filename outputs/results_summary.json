@@ -1,0 +1,44 @@
+{
+  "n_obs": 478,
+  "n_ties": 100,
+  "best_c": 0.001,
+  "accuracy": 0.3958333333333333,
+  "f1_macro": 0.1417910447761194,
+  "baseline_accuracy": 0.3958333333333333,
+  "baseline_f1_macro": 0.1417910447761194,
+  "lrt_statistic": 10.42831951209837,
+  "lrt_p": 1.0,
+  "chi2_gender_p": 0.33283821314225215,
+  "class_counts": {
+    "ADHD-Dominant": 187,
+    "Depression-Dominant": 138,
+    "Anxiety-Dominant": 92,
+    "LowSelfEsteem-Dominant": 61
+  },
+  "cv_results": [
+    {
+      "C": 0.001,
+      "mean_accuracy": 0.39005468215994527
+    },
+    {
+      "C": 0.01,
+      "mean_accuracy": 0.36637047163362957
+    },
+    {
+      "C": 0.1,
+      "mean_accuracy": 0.38462064251537936
+    },
+    {
+      "C": 1.0,
+      "mean_accuracy": 0.38205741626794254
+    },
+    {
+      "C": 10.0,
+      "mean_accuracy": 0.376930963773069
+    },
+    {
+      "C": 100.0,
+      "mean_accuracy": 0.38215994531784003
+    }
+  ]
+}
