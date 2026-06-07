@@ -1,4 +1,4 @@
-"""Data loading and target engineering."""
+"""Chargement des données et construction de la variable cible."""
 
 import numpy as np
 import pandas as pd
@@ -15,25 +15,14 @@ from analysis.config import (
 
 
 def load_raw_data(path) -> pd.DataFrame:
-    """Load and rename survey columns.
-
-    Parameters
-    ----------
-    path : str or Path
-        Path to smmh.csv.
-
-    Returns
-    -------
-    pd.DataFrame
-        Renamed dataframe.
-    """
+    """Charge smmh.csv et applique le renommage des colonnes du questionnaire."""
     df = pd.read_csv(path)
     df = df.rename(columns=COLUMN_RENAME)
     return df
 
 
 def _to_numeric_likert(df: pd.DataFrame) -> pd.DataFrame:
-    """Convert Likert columns to numeric."""
+    """Cast des items Likert et de l'âge en valeurs numériques."""
     out = df.copy()
     for col in LIKERT_COLS:
         out[col] = pd.to_numeric(out[col], errors="coerce")
@@ -42,7 +31,7 @@ def _to_numeric_likert(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def compute_composite_scores(df: pd.DataFrame) -> pd.DataFrame:
-    """Compute four composite mental-health scores."""
+    """Calcule les quatre scores composites (ADHD, anxiété, estime, dépression)."""
     out = _to_numeric_likert(df)
     out["score_ADHD"] = out[["q9_no_purpose", "q10_distracted", "q12_easily_distracted"]].mean(axis=1)
     out["score_anxiety"] = out[["q11_restless", "q13_worries"]].mean(axis=1)
@@ -52,19 +41,9 @@ def compute_composite_scores(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def assign_behavior_profile(df: pd.DataFrame, rng: np.random.Generator | None = None) -> tuple[pd.DataFrame, int]:
-    """Assign dominant profile with random tie-breaking.
+    """Attribue le profil dominant (argmax) ; ex æquo résolus par tirage aléatoire reproductible.
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        Dataframe with composite scores.
-    rng : np.random.Generator, optional
-        RNG for reproducible tie breaks.
-
-    Returns
-    -------
-    tuple[pd.DataFrame, int]
-        Updated dataframe and number of tie-break rows.
+    Retourne le jeu enrichi et le nombre de lignes concernées par une égalité.
     """
     if rng is None:
         rng = np.random.default_rng(RANDOM_STATE)
@@ -89,7 +68,7 @@ def assign_behavior_profile(df: pd.DataFrame, rng: np.random.Generator | None = 
 
 
 def add_predictive_features(df: pd.DataFrame) -> pd.DataFrame:
-    """Engineer exogenous features for modeling."""
+    """Construit les prédicteurs exogènes (temps SM, plateformes, indicateurs binaires)."""
     out = df.copy()
     out["time_social_media_ord"] = out["time_on_social_media"].map(TIME_MAP)
     out["n_platforms"] = out["platforms"].fillna("").apply(
@@ -102,7 +81,7 @@ def add_predictive_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def prepare_dataset(path) -> tuple[pd.DataFrame, int]:
-    """Full data preparation pipeline."""
+    """Chaîne complète : filtrage, scores, profil et features prédictives."""
     df = load_raw_data(path)
     df = df[df["uses_social_media"].str.strip().str.lower() == "yes"].copy()
     df = compute_composite_scores(df)
@@ -112,7 +91,7 @@ def prepare_dataset(path) -> tuple[pd.DataFrame, int]:
 
 
 def get_feature_columns() -> tuple[list[str], list[str]]:
-    """Return numeric and categorical feature column names."""
+    """Liste des colonnes numériques et catégorielles retenues pour X."""
     numeric = ["age", "time_social_media_ord", "n_platforms"] + [
         f"uses_{p.lower()}" for p in TOP_PLATFORMS
     ]

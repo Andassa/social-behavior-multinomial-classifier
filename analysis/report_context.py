@@ -1,4 +1,4 @@
-"""Build enriched context for IMRAD Word report generation."""
+"""Assemblage du contexte numérique pour le rapport Word IMRAD."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ from analysis.config import (
 
 @dataclass
 class ReportContext:
-    """All narrative and numeric data needed to write the exposé."""
+    """Données chiffrées et métadonnées nécessaires à la rédaction de l'exposé."""
 
     n_obs: int
     n_raw: int
@@ -79,7 +79,7 @@ def build_report_context(
     n_raw: int = 481,
     n_features_encoded: int = 0,
 ) -> ReportContext:
-    """Aggregate pipeline outputs into a report-ready context."""
+    """Consolide les sorties du pipeline dans une structure ReportContext."""
     report_dict = classification_report(
         y_test_labels, y_pred, labels=classes, output_dict=True, zero_division=0
     )
@@ -158,7 +158,7 @@ def build_report_context(
 
 
 def save_report_context(ctx: ReportContext, path: Path | None = None) -> Path:
-    """Serialize context to JSON for regenerate_report.py."""
+    """Écrit le contexte rapport au format JSON (outputs/report_context.json)."""
     path = path or PROJECT_ROOT / "outputs" / "report_context.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
@@ -167,7 +167,7 @@ def save_report_context(ctx: ReportContext, path: Path | None = None) -> Path:
 
 
 def load_report_context(path: Path | None = None) -> ReportContext:
-    """Load context from JSON."""
+    """Charge le contexte rapport depuis le fichier JSON."""
     path = path or PROJECT_ROOT / "outputs" / "report_context.json"
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
@@ -175,7 +175,7 @@ def load_report_context(path: Path | None = None) -> ReportContext:
 
 
 def get_variable_annex_rows() -> list[tuple[str, str, str]]:
-    """Return (name, type, description) for Annex A."""
+    """Inventaire des variables du questionnaire pour l'annexe A."""
     descriptions = {
         "timestamp": "Horodatage de la réponse",
         "age": "Âge en années",

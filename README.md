@@ -2,7 +2,7 @@
 
 ## Description
 
-Classification multinomiale des profils comportementaux liés aux réseaux sociaux via **régression logistique multinomiale** (fonction softmax). Projet académique complet avec notebook narratif, figures publication (300 dpi), modèle sérialisé et rapport **IMRAD** Word auto-généré.
+Classification multinomiale des profils comportementaux liés aux réseaux sociaux via **régression logistique multinomiale** (fonction softmax). Projet académique avec notebook commenté, figures d'analyse (300 dpi) et export des métriques.
 
 **Auteur :** RAMANANANDRO Andassa Fanomezantsoa (MII 227I22) — EMIT Fianarantsoa
 
@@ -34,29 +34,14 @@ Fichier local : `data/smmh.csv`
 social-behavior-multinomial-classifier/
 ├── README.md
 ├── requirements.txt
-├── run_pipeline.py              # Exécution bout-en-bout (figures + modèle + rapport)
+├── run_pipeline.py              # Exécution bout-en-bout (figures + modèle + métriques)
 ├── analysis/                    # Modules réutilisables
 ├── data/smmh.csv
 ├── notebooks/social_behavior_classifier.ipynb
 ├── outputs/figures/             # fig01 … fig15 (PNG 300 dpi)
-├── outputs/models/multinomial_lr_model.pkl
 ├── outputs/results_summary.json
-└── report/rapport_IMRAD.docx    # Exposé TFE IMRaD (généré automatiquement)
+└── outputs/report_context.json
 ```
-
-### Structure du rapport Word
-
-Document hybride **exposé TFE** (25–35 pages corps, hors annexes) :
-
-1. Page de garde, résumé (~250 mots, passé), table des matières
-2. **I. Introduction** (entonnoir + objectifs SMART)
-3. **II. Revue de littérature**
-4. **III. Méthode** (+ cadre mathématique en 8 sous-sections)
-5. **IV. Résultats** (tableaux chiffrés + 6 figures, sans interprétation)
-6. **V. Discussion** (interprétation, biais, confrontation littérature)
-7. **VI. Conclusion**, références Vancouver, annexes A–D
-
-Régénérer uniquement le rapport : `python generate_report.py` (nécessite `outputs/report_context.json`).
 
 ## Installation et exécution
 

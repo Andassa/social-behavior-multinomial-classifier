@@ -1,4 +1,4 @@
-"""Generate professional TFE-style IMRAD Word exposé with python-docx."""
+"""Rédaction du rapport Word IMRAD (exposé TFE) via python-docx."""
 
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ class _Counters:
 
 
 class ImradReportWriter:
-    """Build Word document section by section."""
+    """Assemble le document Word section par section."""
 
     def __init__(self, ctx: ReportContext):
         self.ctx = ctx
@@ -599,7 +599,7 @@ def _add_page_numbers(doc: Document) -> None:
 
 
 def generate_imrad_report(ctx: ReportContext | None = None, path: Path | None = None) -> Path:
-    """Generate rapport_IMRAD.docx from ReportContext."""
+    """Exporte rapport_IMRAD.docx à partir du contexte fourni."""
     if ctx is None:
         ctx = load_report_context()
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -609,9 +609,9 @@ def generate_imrad_report(ctx: ReportContext | None = None, path: Path | None = 
     return out_path
 
 
-# Backward compatibility for notebook calling old signature
+# Alias conservé pour l'ancienne signature appelée depuis le notebook
 def generate_imrad_report_legacy(metrics: dict, n_ties: int, best_c: float) -> Path:
-    """Load saved context or raise if missing."""
+    """Charge le contexte enregistré ; lève une erreur si le fichier est absent."""
     ctx_path = Path(__file__).resolve().parents[1] / "outputs" / "report_context.json"
     if ctx_path.exists():
         return generate_imrad_report(load_report_context(ctx_path))

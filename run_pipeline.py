@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Execute full analysis pipeline (figures, model, report)."""
+"""Point d'entrée : figures, modèle, métriques et rapport IMRAD."""
 
 import json
 import sys
@@ -42,7 +42,7 @@ from analysis.report_context import build_report_context, save_report_context  #
 
 
 def main() -> dict:
-    """Run end-to-end pipeline."""
+    """Exécute la chaîne complète d'analyse."""
     plt.style.use("seaborn-v0_8-whitegrid")
     sns.set_palette(["#2E86AB", "#A23B72", "#F18F01", "#C73E1D"])
 
@@ -84,7 +84,7 @@ def main() -> dict:
     accuracy = accuracy_score(y_test, y_pred)
     f1_macro = f1_score(y_test, y_pred, average="macro")
 
-    # LRT: full vs intercept-only on training set
+    # LRT : modèle complet vs modèle nul (probabilités a priori) sur le jeu d'entraînement
     prep = pipeline_final.named_steps["prep"]
     X_train_t = prep.fit_transform(X_train)
     X_train_t_const = np.hstack([np.ones((X_train_t.shape[0], 1)), X_train_t])

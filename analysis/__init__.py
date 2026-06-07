@@ -1,1 +1,1 @@
-"""Analysis package for social behavior multinomial classifier."""
+"""Package d'analyse — classification multinomiale des profils comportementaux."""

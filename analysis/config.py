@@ -1,4 +1,4 @@
-"""Project constants and paths."""
+"""Chemins, hyperparamètres et constantes du projet."""
 
 from pathlib import Path
 
