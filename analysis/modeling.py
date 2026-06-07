@@ -1,4 +1,4 @@
-"""Model training, cross-validation, and inference."""
+"""Entraînement, validation croisée et inférence du classifieur multinomial."""
 
 import numpy as np
 import pandas as pd
@@ -16,7 +16,7 @@ from analysis.data import get_feature_columns
 
 
 def build_preprocessor(numeric_cols: list[str], categorical_cols: list[str]) -> ColumnTransformer:
-    """Create sklearn ColumnTransformer."""
+    """Préprocesseur : standardisation numérique + encodage one-hot."""
     return ColumnTransformer(
         transformers=[
             ("num", StandardScaler(), numeric_cols),
@@ -26,7 +26,7 @@ def build_preprocessor(numeric_cols: list[str], categorical_cols: list[str]) -> 
 
 
 def build_pipeline(preprocessor: ColumnTransformer, C: float = 1.0) -> Pipeline:
-    """Create full modeling pipeline."""
+    """Pipeline sklearn : prétraitement puis régression logistique multinomiale."""
     return Pipeline(
         steps=[
             ("prep", preprocessor),
@@ -44,7 +44,7 @@ def build_pipeline(preprocessor: ColumnTransformer, C: float = 1.0) -> Pipeline:
 
 
 def get_feature_names(preprocessor: ColumnTransformer) -> list[str]:
-    """Extract feature names after preprocessing."""
+    """Noms des variables après transformation (numériques + dummies)."""
     num_features = preprocessor.transformers_[0][2]
     cat_encoder = preprocessor.named_transformers_["cat"]
     cat_features = list(cat_encoder.get_feature_names_out())
@@ -52,7 +52,7 @@ def get_feature_names(preprocessor: ColumnTransformer) -> list[str]:
 
 
 def run_grid_search(pipeline: Pipeline, X_train, y_train) -> tuple[GridSearchCV, pd.DataFrame, float]:
-    """Run GridSearchCV on C hyperparameter."""
+    """Recherche par grille du paramètre de régularisation C (validation croisée stratifiée)."""
     param_grid = {"clf__C": [0.001, 0.01, 0.1, 1, 10, 100]}
     cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
     grid = GridSearchCV(
@@ -66,14 +66,14 @@ def run_grid_search(pipeline: Pipeline, X_train, y_train) -> tuple[GridSearchCV,
 
 
 def compute_lrt(log_lik_full: float, log_lik_null: float, df_diff: int) -> dict:
-    """Likelihood ratio test statistics."""
+    """Statistique du test du rapport de vraisemblance (LR, ddl, p-value)."""
     lr_stat = -2 * (log_lik_null - log_lik_full)
     p_value = float(1 - stats.chi2.cdf(lr_stat, df_diff))
     return {"lr_statistic": lr_stat, "df": df_diff, "p_value": p_value}
 
 
 def log_likelihood_multinomial(y_true, proba, classes) -> float:
-    """Compute multinomial log-likelihood."""
+    """Log-vraisemblance multinomiale sur les probabilités prédites."""
     class_to_idx = {c: i for i, c in enumerate(classes)}
     idx = np.array([class_to_idx[y] for y in y_true])
     proba_clipped = np.clip(proba, 1e-15, 1.0)
@@ -81,7 +81,7 @@ def log_likelihood_multinomial(y_true, proba, classes) -> float:
 
 
 def evaluate_baselines(y_train, y_test) -> dict:
-    """ZeroR baseline vs trained metrics placeholder."""
+    """Référence ZeroR (classe majoritaire) : accuracy et F1 macro."""
     dummy = DummyClassifier(strategy="most_frequent")
     dummy.fit(np.zeros((len(y_train), 1)), y_train)
     y_pred_dummy = dummy.predict(np.zeros((len(y_test), 1)))
@@ -92,7 +92,7 @@ def evaluate_baselines(y_train, y_test) -> dict:
 
 
 def extract_coefficients(pipeline: Pipeline) -> pd.DataFrame:
-    """Build coefficient dataframe."""
+    """Tableau des coefficients β (features × classes)."""
     prep = pipeline.named_steps["prep"]
     clf = pipeline.named_steps["clf"]
     feature_names = get_feature_names(prep)
@@ -101,13 +101,21 @@ def extract_coefficients(pipeline: Pipeline) -> pd.DataFrame:
     return pd.DataFrame(coef.T, index=feature_names, columns=classes)
 
 
-def compute_odds_ratios(coef_df: pd.DataFrame) -> pd.DataFrame:
-    """Exponentiate coefficients for odds ratios vs reference class."""
-    return np.exp(coef_df)
+def compute_odds_ratios(
+    coef_df: pd.DataFrame,
+    reference_class: str | None = None,
+) -> pd.DataFrame:
+    """Odds ratios par paire : exp(β_k − β_ref) par rapport à la classe de référence."""
+    ref = reference_class or coef_df.columns[-1]
+    ref_coef = coef_df[ref]
+    return pd.DataFrame(
+        {cls: np.exp(coef_df[cls] - ref_coef) for cls in coef_df.columns if cls != ref},
+        index=coef_df.index,
+    )
 
 
 def split_data(df: pd.DataFrame, target_col: str = "behavior_profile"):
-    """Train-test split with stratification."""
+    """Partition train/test stratifiée sur la variable cible."""
     numeric_cols, categorical_cols = get_feature_columns()
     feature_cols = numeric_cols + categorical_cols
     X = df[feature_cols]

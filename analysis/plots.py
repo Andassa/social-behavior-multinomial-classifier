@@ -1,4 +1,4 @@
-"""EDA and evaluation figure generation."""
+"""Production des figures exploratoires et d'évaluation (export PNG 300 dpi)."""
 
 from pathlib import Path
 
@@ -26,7 +26,7 @@ from analysis.config import (
 
 
 def save_fig(name: str, dpi: int = DPI) -> Path:
-    """Save current matplotlib figure to outputs/figures."""
+    """Enregistre la figure courante dans outputs/figures/."""
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
     path = FIGURES_DIR / f"{name}.png"
     plt.tight_layout()
@@ -36,7 +36,7 @@ def save_fig(name: str, dpi: int = DPI) -> Path:
 
 
 def plot_class_distribution(df: pd.DataFrame) -> None:
-    """Pie and bar charts of behavior profiles."""
+    """Diagrammes circulaire et en barres de la distribution des profils."""
     counts = df["behavior_profile"].value_counts().reindex(PROFILE_ORDER)
     plt.figure(figsize=(8, 8))
     plt.pie(counts, labels=counts.index, autopct="%1.1f%%", colors=PALETTE, startangle=90)
@@ -52,7 +52,7 @@ def plot_class_distribution(df: pd.DataFrame) -> None:
 
 
 def plot_eda_figures(df: pd.DataFrame) -> None:
-    """Generate fig01-fig08 exploratory plots."""
+    """Génère les huit figures d'analyse exploratoire (fig01–fig08)."""
     numeric_cols = ["age", "time_social_media_ord", "n_platforms"] + SCORE_COLS
     corr = df[numeric_cols].corr()
     plt.figure(figsize=(10, 8))
@@ -135,7 +135,7 @@ def plot_eda_figures(df: pd.DataFrame) -> None:
 
 
 def plot_cv_results(cv_results: pd.DataFrame, best_c: float) -> None:
-    """Plot accuracy vs log(C)."""
+    """Courbe d'accuracy en validation croisée selon C (échelle logarithmique)."""
     plt.figure(figsize=(8, 5))
     plt.semilogx(cv_results["C"], cv_results["mean_accuracy"], marker="o", label="Moyenne CV")
     plt.axvline(best_c, color="red", linestyle="--", label=f"C optimal = {best_c}")
@@ -150,7 +150,7 @@ def plot_cv_results(cv_results: pd.DataFrame, best_c: float) -> None:
 def plot_evaluation(
     y_test, y_pred, y_proba, classes, feature_names=None
 ) -> dict:
-    """Generate evaluation figures and return metrics dict."""
+    """Figures d'évaluation (confusion, ROC, PR) et dictionnaire de métriques."""
     cm = confusion_matrix(y_test, y_pred, labels=classes)
     cm_norm = cm.astype(float) / cm.sum(axis=1, keepdims=True)
 
@@ -211,7 +211,7 @@ def plot_evaluation(
 
 
 def plot_coefficients(coef_df: pd.DataFrame) -> None:
-    """Heatmap of multinomial coefficients."""
+    """Carte thermique des coefficients de la régression multinomiale."""
     plt.figure(figsize=(14, max(6, len(coef_df) * 0.25)))
     sns.heatmap(coef_df, cmap="RdBu_r", center=0, annot=False)
     plt.title("Heatmap des coefficients β (features × classes)")
@@ -221,13 +221,13 @@ def plot_coefficients(coef_df: pd.DataFrame) -> None:
 
 
 def plot_odds_ratios(or_df: pd.DataFrame, top_n: int = 8) -> None:
-    """Forest-style plot of top odds ratios per class."""
+    """Barres horizontales des odds ratios les plus élevés, par classe."""
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
     for ax, cls, color in zip(axes.ravel(), or_df.columns, PALETTE):
         sub = or_df[cls].dropna()
         sub = sub.iloc[np.argsort(np.abs(sub))[-top_n:]]
         sub.plot(kind="barh", ax=ax, color=color)
-        ax.set_title(f"Top OR — {cls}")
-        ax.set_xlabel("exp(β)")
+        ax.set_title(f"OR vs ref. — {cls}")
+        ax.set_xlabel("exp(β_k − β_ref)")
     plt.suptitle("Odds ratios — features les plus influentes")
     save_fig("fig15_odds_ratios")
